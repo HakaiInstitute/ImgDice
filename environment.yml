@@ -1,0 +1,11 @@
+name: img-dice-py
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - fire
+  - rasterio
+  - gdal
+  - pyshp
+
