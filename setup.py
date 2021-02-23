@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='img-dice-py',
-    version='v0.1.0',
-    py_modules=['lib'],
+    name='img-dice',
+    version='0.1.0',
+    py_modules=['img_dice'],
     install_requires=['rasterio', 'pyshp', 'gdal'],
     url='github.com/tayden/img-dice-py',
     license='MIT',
