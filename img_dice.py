@@ -96,7 +96,8 @@ def _crop_img_to_shp(img: rasterio.DatasetReader, shape: shapefile.Shape, out_pa
 
     # Write to the output directory
     out = out_path.crop_path(shp_bbox.left, shp_bbox.bottom)
-    transform = Affine.translation(bbox.left, bbox.top) * Affine.scale(img.transform.a, img.transform.e)
+    x_res, y_res = img.res
+    transform = Affine.translation(bbox.left, bbox.top) * Affine.scale(x_res, -y_res)
 
     with rasterio.open(out, 'w',
                        driver=img.driver,
