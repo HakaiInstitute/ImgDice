@@ -1,8 +1,11 @@
 from setuptools import setup
 
+with open('VERSION', 'r') as file:
+    version = file.read().replace('\n', '')
+
 setup(
     name='img-dice',
-    version='0.1.0',
+    version=version,
     py_modules=['img_dice'],
     install_requires=['rasterio', 'pyshp', 'gdal'],
     url='github.com/tayden/img-dice-py',
