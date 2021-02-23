@@ -57,7 +57,7 @@ class _BBox(object):
         self.top = top
 
     def __repr__(self):
-        return f'left: {self.left}, bottom: {self.bottom}, right: {self.right}, top: {self.top}'
+        return f'{self.left=}, {self.bottom=}, {self.right=}, {self.top=}'
 
     @property
     def is_valid(self):
@@ -71,11 +71,11 @@ class _BBox(object):
             min(self.top, other.top)
         )
 
-    def to_img_coords(self, img: rasterio.DatasetReader) -> tuple:
+    def img_coords(self, img: rasterio.DatasetReader) -> tuple:
         return img.index(self.left, self.top), img.index(self.right, self.bottom)
 
     def to_window(self, img: rasterio.DatasetReader):
-        lt, rb = self.to_img_coords(img)
+        lt, rb = self.img_coords(img)
         return rasterio.windows.Window(lt[1], lt[0], rb[1] - lt[1], rb[0] - lt[0])
 
 
