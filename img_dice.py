@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict
 
 import rasterio
 import rasterio.windows
@@ -71,12 +72,13 @@ class _BBox(object):
             min(self.top, other.top)
         )
 
-    def img_coords(self, img: rasterio.DatasetReader) -> tuple:
-        return img.index(self.left, self.top), img.index(self.right, self.bottom)
+    def img_coords(self, img: rasterio.DatasetReader) -> Dict[str, int]:
+        (top, left), (bottom, right) = img.index(self.left, self.top), img.index(self.right, self.bottom)
+        return {'left': left, 'bottom': bottom, 'right': right, 'top': top}
 
     def to_window(self, img: rasterio.DatasetReader):
-        lt, rb = self.img_coords(img)
-        return rasterio.windows.Window(lt[1], lt[0], rb[1] - lt[1], rb[0] - lt[0])
+        c = self.img_coords(img)
+        return rasterio.windows.Window(c['left'], c['top'], c['right'] - c['left'], c['bottom'] - c['top'])
 
 
 def _crop_img_to_shp(img: rasterio.DatasetReader, shape: shapefile.Shape, out_path: _OutPath) -> bool:
