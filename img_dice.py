@@ -57,11 +57,11 @@ class _BBox(object):
         self.right = right
         self.top = top
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.left=}, {self.bottom=}, {self.right=}, {self.top=}'
 
     @property
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self.right > self.left > 0 and self.top > self.bottom > 0
 
     def intersect(self, other: '_BBox') -> '_BBox':
@@ -76,7 +76,7 @@ class _BBox(object):
         (top, left), (bottom, right) = img.index(self.left, self.top), img.index(self.right, self.bottom)
         return {'left': left, 'bottom': bottom, 'right': right, 'top': top}
 
-    def to_window(self, img: rasterio.DatasetReader):
+    def to_window(self, img: rasterio.DatasetReader) -> rasterio.windows.Window:
         c = self.img_coords(img)
         return rasterio.windows.Window(c['left'], c['top'], c['right'] - c['left'], c['bottom'] - c['top'])
 
@@ -95,23 +95,18 @@ def _crop_img_to_shp(img: rasterio.DatasetReader, shape: shapefile.Shape, out_pa
     data = img.read(window=window)
 
     # Write to the output directory
-    out = out_path.crop_path(shp_bbox.left, shp_bbox.bottom)
+    out_path = out_path.crop_path(shp_bbox.left, shp_bbox.bottom)
     x_res, y_res = img.res
     transform = Affine.translation(bbox.left, bbox.top) * Affine.scale(x_res, -y_res)
 
-    with rasterio.open(out, 'w',
-                       driver=img.driver,
-                       height=window.height,
-                       width=window.width,
-                       count=img.count,
-                       dtype=img.dtypes[0],
-                       crs=img.crs,
-                       transform=transform,
-                       nodata=img.nodata,
-                       mask_flag_enums=img.mask_flag_enums,
-                       ) as writer:
+    profile = img.profile
+    profile.update(transform=transform, height=window.height, width=window.width)
+
+    with rasterio.open(out_path, 'w', **profile) as writer:
         writer.write(data)
+
+        # Fixes band 4 being labelled as alpha channel
         writer.colorinterp = img.colorinterp
 
-    print(f'Created: {out}')
+    print(f'Created: {out_path}')
     return True
