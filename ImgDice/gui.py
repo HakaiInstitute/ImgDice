@@ -1,5 +1,5 @@
-import os
 import sys
+from os import path
 from queue import Queue
 
 from PySide2 import QtCore
@@ -30,8 +30,9 @@ class ImgDiceGUI(QWidget):
 
         # Load UI
         loader = QUiLoader()
-        path = os.path.join(os.path.dirname(__file__), "form.ui")
-        ui_file = QFile(path)
+        bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+        ui_path = path.abspath(path.join(bundle_dir, "form.ui"))
+        ui_file = QFile(ui_path)
         ui_file.open(QFile.ReadOnly)
         self.ui = loader.load(ui_file, self)
         ui_file.close()
@@ -126,6 +127,7 @@ class LoggingThread(QThread):
 
     @Slot()
     def stop(self):
+        print("Exiting")  # Required to exit the waiting queue in run loop
         self.running = False
         self.quit()
         self.wait()

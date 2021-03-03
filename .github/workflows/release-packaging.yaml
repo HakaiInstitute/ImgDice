@@ -40,7 +40,12 @@ jobs:
         run: pyinstaller --onefile --additional-hooks-dir=hooks cli.py
 
       - name: Build GUI Executable
-        run: pyinstaller --onefile --additional-hooks-dir=hooks ImgDice/gui.py
+        run: |
+          if ${{ runner.os }} == 'Windows'; then
+            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui;." ImgDice/gui.py
+          else
+            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui:." ImgDice/gui.py
+          fi
 
       - name: Archive release artifacts
         uses: actions/upload-artifact@v2
