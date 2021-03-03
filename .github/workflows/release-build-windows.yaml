@@ -37,10 +37,10 @@ jobs:
         run: conda install -c conda-forge pyinstaller
 
       - name: Build CLI Executable
-        run: pyinstaller --onefile --additional-hooks-dir=. cli.py
+        run: pyinstaller --onefile --additional-hooks-dir=hooks cli.py
 
       - name: Build GUI Executable
-        run: pyinstaller --onefile --additional-hooks-dir=. ImgDice/gui.py
+        run: pyinstaller --onefile --additional-hooks-dir=hooks ImgDice/gui.py
 
       - name: Archive release artifacts
         uses: actions/upload-artifact@v2
