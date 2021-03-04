@@ -20,7 +20,7 @@ polygons and the image to be sectioned are in a common UTM coordinate reference 
 
 ### Python Package
 
-- Install the package with `pip install git@https://github.com/tayden/img-dice-py`
+- Install the package with `pip install git@https://github.com/HakaiInstitute/img-dice-py`
 - Import the dice function into your Python script
 
 e.g.
