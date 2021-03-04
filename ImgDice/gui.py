@@ -37,8 +37,6 @@ class ImgDiceGUI(QWidget):
         self.ui = loader.load(ui_file, self)
         ui_file.close()
 
-        self.setWindowTitle('GeoTiff Img Dice')
-
         # TODO: REMOVE
         # self.ui.lineEditImgPath.setText(
         #     "/home/taylor/Downloads/20_3014-02_BigBarSlide/20-3014-02_OrthoV3_UTM10_sub.tif")
