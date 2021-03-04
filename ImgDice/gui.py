@@ -3,10 +3,10 @@ from os import path
 from queue import Queue
 
 from PySide2 import QtCore
-from PySide2.QtCore import QFile, QThread, Signal, Slot
+from PySide2.QtCore import QThread, Signal, Slot
 from PySide2.QtGui import QTextCursor
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow, QWidget
+from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from img_dice import dice
 
