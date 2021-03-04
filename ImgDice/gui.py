@@ -6,7 +6,7 @@ from PySide2 import QtCore
 from PySide2.QtCore import QFile, QThread, Signal, Slot
 from PySide2.QtGui import QTextCursor
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QFileDialog, QWidget
+from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow, QWidget
 
 from img_dice import dice
 
@@ -24,24 +24,16 @@ class DiceThread(QThread):
         self.result_ready.emit(result)
 
 
-class ImgDiceGUI(QWidget):
+class ImgDiceGUI(QMainWindow):
     def __init__(self):
-        super(ImgDiceGUI, self).__init__()
+        super().__init__()
 
         # Load UI
-        loader = QUiLoader()
+        loader = QUiLoader(self)
         bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
         ui_path = path.abspath(path.join(bundle_dir, "form.ui"))
-        ui_file = QFile(ui_path)
-        ui_file.open(QFile.ReadOnly)
-        self.ui = loader.load(ui_file, self)
-        ui_file.close()
-
-        # TODO: REMOVE
-        # self.ui.lineEditImgPath.setText(
-        #     "/home/taylor/Downloads/20_3014-02_BigBarSlide/20-3014-02_OrthoV3_UTM10_sub.tif")
-        # self.ui.lineEditTileIndex.setText("/home/taylor/Downloads/20_3014-02_BigBarSlide/tile_index_sub.shp")
-        # self.ui.lineEditOutDir.setText("/home/taylor/Downloads")
+        self.ui = loader.load(ui_path, self)
+        self.setWindowTitle("Img Dice")
 
         # Connect signals/slots
         self.ui.pushButtonRun.clicked.connect(self.handle_run)
