@@ -34,10 +34,18 @@ jobs:
           activate-environment: img-dice-py
 
       - name: Install PyInstaller
-        run: conda install pyinstaller
+        run: conda install -c conda-forge pyinstaller
 
-      - name: Build Executable
-        run: pyinstaller --onefile cli.py
+      - name: Build CLI Executable
+        run: pyinstaller --onefile --additional-hooks-dir=hooks cli.py
+
+      - name: Build GUI Executable
+        run: |
+          if ${{ runner.os }} == 'Windows'; then
+            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui;." ImgDice/gui.py
+          else
+            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui:." ImgDice/gui.py
+          fi
 
       - name: Archive release artifacts
         uses: actions/upload-artifact@v2
@@ -78,7 +86,7 @@ jobs:
           name: windows-latest-dist
           path: win64-dist
 
-      - name: Upload Windows assets
+      - name: Upload Windows CLI assets
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -88,13 +96,23 @@ jobs:
           asset_name: img-dice-${{ steps.tag.outputs.tag }}-win64.exe
           asset_content_type: application/octet-stream
 
+      - name: Upload Windows GUI assets
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: win64-dist/gui.exe
+          asset_name: ImgDice-${{ steps.tag.outputs.tag }}-win64.exe
+          asset_content_type: application/octet-stream
+
       - name: Download Ubuntu artifacts
         uses: actions/download-artifact@v2
         with:
           name: ubuntu-latest-dist
           path: linux-dist
 
-      - name: Upload Ubuntu assets
+      - name: Upload Ubuntu CLI assets
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -102,4 +120,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: linux-dist/cli
           asset_name: img-dice-${{ steps.tag.outputs.tag }}-linux
+          asset_content_type: application/octet-stream
+
+      - name: Upload Ubuntu GUI assets
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: linux-dist/gui
+          asset_name: ImgDice-${{ steps.tag.outputs.tag }}-linux
           asset_content_type: application/octet-stream
