@@ -46,9 +46,9 @@ jobs:
       - name: Build GUI Executable
         run: |
           if ${{ runner.os }} == 'Windows'; then
-            poetry run pyinstaller --onefile --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui;." img_dice/gui.py
+            poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice\resources\img-dice.ico;resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui;resources" img_dice/gui.py
           else
-            poetry run pyinstaller --onefile --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:." img_dice/gui.py
+            poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice\resources\img-dice.ico:resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:resources" img_dice/gui.py
           fi
 
       - name: Archive release artifacts

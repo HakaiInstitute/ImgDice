@@ -1,14 +1,20 @@
+import os
 import sys
-from os import path
 from queue import Queue
 
 from PySide2 import QtCore
-from PySide2.QtCore import QThread, Signal, Slot
-from PySide2.QtGui import QTextCursor
+from PySide2.QtCore import QSize, QThread, Signal, Slot
+from PySide2.QtGui import QIcon, QTextCursor
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow
 
 from img_dice.lib import dice
+
+
+def resource_path(relative_path: str):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 
 class DiceThread(QThread):
@@ -30,10 +36,12 @@ class ImgDiceGUI(QMainWindow):
 
         # Load UI
         loader = QUiLoader(self)
-        bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
-        ui_path = path.abspath(path.join(bundle_dir, "resources/form.ui"))
-        self.ui = loader.load(ui_path, self)
-        self.setWindowTitle("Img Dice")
+        self.ui = loader.load(resource_path("resources/form.ui"), self)
+        icon = QIcon()
+        icon.addFile(
+            resource_path("resources/img-dice.ico"), QSize(), QIcon.Normal, QIcon.Off
+        )
+        self.setWindowIcon(icon)
 
         # Connect signals/slots
         self.ui.pushButtonRun.clicked.connect(self.handle_run)
