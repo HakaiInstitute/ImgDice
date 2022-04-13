@@ -71,7 +71,7 @@ class ImgDiceGUI(QMainWindow):
 
     @Slot()
     def handle_out_dir_select(self):
-        path, _ = QFileDialog.getExistingDirectory(self, "Choose Save Location")
+        path = QFileDialog.getExistingDirectory(self, "Choose Save Location")
         self.ui.lineEditOutDir.setText(path)
 
     @property
