@@ -35,7 +35,14 @@ jobs:
       - name: Install dependencies
         run: |
           poetry update
+          poetry run pip install -U pip    
           poetry run pip install --upgrade setuptools
+
+      - name: Install Windows specific dependencies
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          poetry run pip install GDAL-1.11.2-cp27-none-win32.whl
+          poetry run pip install -U rasterio-0.24.0-cp27-none-win32.whl
 
       - name: Build Windows GUI Executable
         if: ${{ runner.os == 'Windows' }}
