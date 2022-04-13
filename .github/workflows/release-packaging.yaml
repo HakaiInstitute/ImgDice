@@ -63,32 +63,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Get tag
         id: tag
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+        run: |
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: true
-          prerelease: false
+      - name: Detect prerelease
+        id: prerelease
+        run: |
+          if echo ${{ steps.tag.outputs.tag }} | grep -qe '?*.*.*rc*'; then
+              echo ::set-output name=prerelease::true
+          else
+              echo ::set-output name=prerelease::false
+          fi
 
       - name: Download Windows artifacts
         uses: actions/download-artifact@v2
         with:
           name: windows-latest-dist
           path: win64-dist
+
+      - name: Download Ubuntu artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ubuntu-latest-dist
+          path: linux-dist
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          release_name: ${{ steps.tag.outputs.tag }}
+          draft: false
+          prerelease: ${{ steps.prerelease.outputs.prerelease }}
 
       - name: Upload Windows CLI assets
         uses: actions/upload-release-asset@v1.0.1
@@ -109,12 +122,6 @@ jobs:
           asset_path: win64-dist/gui.exe
           asset_name: img_dice-${{ steps.tag.outputs.tag }}-win64.exe
           asset_content_type: application/octet-stream
-
-      - name: Download Ubuntu artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: ubuntu-latest-dist
-          path: linux-dist
 
       - name: Upload Ubuntu CLI assets
         uses: actions/upload-release-asset@v1.0.1
