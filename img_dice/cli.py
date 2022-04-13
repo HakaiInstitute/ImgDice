@@ -2,5 +2,10 @@ import fire
 
 from img_dice.lib import dice
 
-if __name__ == '__main__':
+
+def main():
     fire.Fire(dice)
+
+
+if __name__ == '__main__':
+    main()
