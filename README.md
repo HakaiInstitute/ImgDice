@@ -1,7 +1,7 @@
 # IMG Dice
 
 Dice large GeoTIFFs into smaller images using a shapefile polygon grid. This software assumes that both the the grid
-polygons and the image to be sectioned are in a common, UTM coordinate-based, reference system.
+polygons and the image to be sectioned are in a common UTM coordinate reference system.
 
 ## Usage
 
@@ -20,7 +20,7 @@ polygons and the image to be sectioned are in a common, UTM coordinate-based, re
 
 ### Python Package
 
-- Install the package with `pip install git@https://github.com/tayden/img-dice-py`
+- Install the package with `pip install git@https://github.com/HakaiInstitute/img-dice-py`
 - Import the dice function into your Python script
 
 e.g.
