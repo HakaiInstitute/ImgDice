@@ -40,15 +40,12 @@ jobs:
       - name: Install PyInstaller
         run: conda install -c conda-forge pyinstaller
 
-      - name: Build CLI Executable
-        run: poetry run pyinstaller --onefile --additional-hooks-dir=hooks img_dice/cli.py
-
       - name: Build GUI Executable
         run: |
           if ${{ runner.os }} == 'Windows'; then
-            poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice\resources\img-dice.ico;resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui;resources" img_dice/gui.py
+            poetry run pyinstaller --onefile --windowed --icon='img_dice\resources\img-dice.ico' --add-data='img_dice\resources\img-dice.ico;resources' --additional-hooks-dir=hooks --add-data="img_dice\resources\form.ui;resources" img_dice/gui.py
           else
-            poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice\resources\img-dice.ico:resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:resources" img_dice/gui.py
+            poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice/resources/img-dice.ico:resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:resources" img_dice/gui.py
           fi
 
       - name: Archive release artifacts
@@ -103,16 +100,6 @@ jobs:
           draft: false
           prerelease: ${{ steps.prerelease.outputs.prerelease }}
 
-      - name: Upload Windows CLI assets
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: win64-dist/cli.exe
-          asset_name: img_dice-${{ steps.tag.outputs.tag }}-win64.exe
-          asset_content_type: application/octet-stream
-
       - name: Upload Windows GUI assets
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -121,16 +108,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: win64-dist/gui.exe
           asset_name: img_dice-${{ steps.tag.outputs.tag }}-win64.exe
-          asset_content_type: application/octet-stream
-
-      - name: Upload Ubuntu CLI assets
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: linux-dist/cli
-          asset_name: img_dice-${{ steps.tag.outputs.tag }}-linux
           asset_content_type: application/octet-stream
 
       - name: Upload Ubuntu GUI assets
