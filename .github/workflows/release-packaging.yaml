@@ -37,16 +37,15 @@ jobs:
           poetry update
           poetry run pip install --upgrade setuptools
 
-      - name: Install PyInstaller
-        run: conda install -c conda-forge pyinstaller
-
-      - name: Build GUI Executable
+      - name: Build Windows GUI Executable
+        if: ${{ runner.os == 'Windows' }}
         run: |
-          if ${{ runner.os }} == 'Windows'; then
-            poetry run pyinstaller --onefile --windowed --icon='img_dice\resources\img-dice.ico' --add-data='img_dice\resources\img-dice.ico;resources' --additional-hooks-dir=hooks --add-data="img_dice\resources\form.ui;resources" img_dice/gui.py
-          else
+          poetry run pyinstaller --onefile --windowed --icon='img_dice\resources\img-dice.ico' --add-data='img_dice\resources\img-dice.ico;resources' --additional-hooks-dir=hooks --add-data="img_dice\resources\form.ui;resources" img_dice/gui.py
+
+      - name: Build Linux GUI Executable
+        if: ${{ runner.os == 'Linux' }}
+        run: |
             poetry run pyinstaller --onefile --windowed --icon='img_dice/resources/img-dice.ico' --add-data='img_dice/resources/img-dice.ico:resources' --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:resources" img_dice/gui.py
-          fi
 
       - name: Archive release artifacts
         uses: actions/upload-artifact@v2
