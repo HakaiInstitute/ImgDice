@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "img-dice"
-version = "0.2.1"
+version = "0.3.0"
 description = "Dice tif images into smaller sections using a shapefile of polygons"
 authors = ["Taylor Denouden <taylor.denouden@hakai.org>"]
 license = "MIT"
