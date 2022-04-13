@@ -46,7 +46,7 @@ class _OutPath(object):
         self.path = Path(out_dir).joinpath(Path(img_path).name)
 
     def crop_path(self, left: int, bottom: int) -> str:
-        return str(self.path.with_name(f'{self.path.stem}_{left}_{bottom}{self.path.suffix}'))
+        return str(self.path.with_name(f'{left}_{bottom}_{self.path.name}'))
 
 
 class _BBox(object):
