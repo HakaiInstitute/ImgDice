@@ -42,6 +42,7 @@ class ImgDiceGUI(QMainWindow):
             resource_path("resources/img-dice.ico"), QSize(), QIcon.Normal, QIcon.Off
         )
         self.setWindowIcon(icon)
+        self.setWindowTitle("Img Dice")
 
         # Connect signals/slots
         self.ui.pushButtonRun.clicked.connect(self.handle_run)
