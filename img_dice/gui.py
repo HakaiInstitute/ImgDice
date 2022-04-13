@@ -8,7 +8,7 @@ from PySide2.QtGui import QTextCursor
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow
 
-from img_dice import dice
+from img_dice.lib import dice
 
 
 class DiceThread(QThread):
@@ -31,7 +31,7 @@ class ImgDiceGUI(QMainWindow):
         # Load UI
         loader = QUiLoader(self)
         bundle_dir = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
-        ui_path = path.abspath(path.join(bundle_dir, "form.ui"))
+        ui_path = path.abspath(path.join(bundle_dir, "resources/form.ui"))
         self.ui = loader.load(ui_path, self)
         self.setWindowTitle("Img Dice")
 

@@ -2,9 +2,11 @@ name: Create Release
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
+    branches-ignore:
+      - '**'
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
 jobs:
   build-binaries:
     defaults:
@@ -20,31 +22,33 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: 1.1.13
 
       - name: Install dependencies
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          miniconda-version: "latest"
-          auto-update-conda: true
-          environment-file: ./environment.yml
-          activate-environment: img-dice-py
+        run: |
+          poetry update
+          poetry run pip install --upgrade setuptools
 
       - name: Install PyInstaller
         run: conda install -c conda-forge pyinstaller
 
       - name: Build CLI Executable
-        run: pyinstaller --onefile --additional-hooks-dir=hooks cli.py
+        run: poetry run pyinstaller --onefile --additional-hooks-dir=hooks img_dice/cli.py
 
       - name: Build GUI Executable
         run: |
           if ${{ runner.os }} == 'Windows'; then
-            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui;." ImgDice/gui.py
+            poetry run pyinstaller --onefile --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui;." img_dice/gui.py
           else
-            pyinstaller --onefile --additional-hooks-dir=hooks --add-data="ImgDice/form.ui:." ImgDice/gui.py
+            poetry run pyinstaller --onefile --additional-hooks-dir=hooks --add-data="img_dice/resources/form.ui:." img_dice/gui.py
           fi
 
       - name: Archive release artifacts
@@ -93,7 +97,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: win64-dist/cli.exe
-          asset_name: img-dice-${{ steps.tag.outputs.tag }}-win64.exe
+          asset_name: img_dice-${{ steps.tag.outputs.tag }}-win64.exe
           asset_content_type: application/octet-stream
 
       - name: Upload Windows GUI assets
@@ -103,7 +107,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: win64-dist/gui.exe
-          asset_name: ImgDice-${{ steps.tag.outputs.tag }}-win64.exe
+          asset_name: img_dice-${{ steps.tag.outputs.tag }}-win64.exe
           asset_content_type: application/octet-stream
 
       - name: Download Ubuntu artifacts
@@ -119,7 +123,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: linux-dist/cli
-          asset_name: img-dice-${{ steps.tag.outputs.tag }}-linux
+          asset_name: img_dice-${{ steps.tag.outputs.tag }}-linux
           asset_content_type: application/octet-stream
 
       - name: Upload Ubuntu GUI assets
@@ -129,5 +133,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: linux-dist/gui
-          asset_name: ImgDice-${{ steps.tag.outputs.tag }}-linux
+          asset_name: img_dice-${{ steps.tag.outputs.tag }}-linux
           asset_content_type: application/octet-stream
