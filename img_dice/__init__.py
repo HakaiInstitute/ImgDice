@@ -1,3 +1,3 @@
-from lib import dice
+from img_dice.lib import dice
 
 __all__ = ['dice']
